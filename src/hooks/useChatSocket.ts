@@ -3,9 +3,11 @@ import { useWebSocket } from "../components/ContextApi/WebSocketProvider/WebSock
 
 export const useChatSocket = (siteId: string) => {
   const [messages, setMessages] = useState<any[]>([]);
-  const { subscribe, unsubscribe } = useWebSocket();
+  const { subscribe, unsubscribe, isConnected } = useWebSocket();
 
   useEffect(() => {
+    if (!isConnected) return;
+    
     const topic = `/topic/site/${siteId}`;
     const handleMessage = (msg: any) => {
       const data = JSON.parse(msg.body);
@@ -14,7 +16,7 @@ export const useChatSocket = (siteId: string) => {
 
     subscribe(topic, handleMessage);
     return () => unsubscribe(topic);
-  }, [siteId]);
+  }, [siteId, subscribe, unsubscribe]);
 
   return { messages };
 };
