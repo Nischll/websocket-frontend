@@ -56,6 +56,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({
           subscriptions.current[topic].subscription = sub;
         });
         setIsConnected(true);
+        console.log("connected");
       },
 
       onDisconnect: () => {
