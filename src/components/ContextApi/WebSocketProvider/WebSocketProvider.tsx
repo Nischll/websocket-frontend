@@ -20,7 +20,7 @@ interface SubscriptionMap {
 
 interface WebSocketContextType {
   subscribe: (topic: string, callback: (msg: IMessage) => void) => void;
-  unsubscribe: (tpiic: string) => void;
+  unsubscribe: (topic: string) => void;
   isConnected: boolean;
   clientRef: RefObject<Client | null>;
 }
