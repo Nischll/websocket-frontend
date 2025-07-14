@@ -6,6 +6,8 @@ const Layout = lazy(() => import("../public/Layout"));
 const Home = lazy(() => import("../public/Home/Home"));
 const ChatRoom = lazy(() => import("../public/ChatRoom/ChatRoom"));
 const AboutUs = lazy(() => import("../public/AboutUs/AboutUs"));
+const SignUp = lazy(() => import("../public/SignUp/SignUp"));
+const SignIn = lazy(() => import("../public/SignIn/SignIn"));
 
 export const publicRoutes: RouteObject[] = [
   {
@@ -38,6 +40,14 @@ export const publicRoutes: RouteObject[] = [
       {
         path: "about-us",
         element: <AboutUs />,
+      },
+      {
+        path: "signup",
+        element: <SignUp />,
+      },
+      {
+        path: "signin",
+        element: <SignIn />,
       },
     ],
   },

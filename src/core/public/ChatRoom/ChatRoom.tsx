@@ -17,7 +17,6 @@ const ChatRoom = () => {
         `http://localhost:8080/api/chat/history?siteId=${123}&receiverId=${2}`
       );
       setChatHistory(res.data);
-      // console.log(res.data);
     };
     fetchChatHistory();
   }, []);
@@ -29,10 +28,10 @@ const ChatRoom = () => {
   useEffect(() => {
     if (chatHistory.length > 0) {
       bottomRef.current?.scrollIntoView({
-        behavior: "auto", // for initial load (no smooth needed)
+        behavior: "auto", 
         block: "end",
       });
-      console.log("history msg");
+      // console.log("history msg");
     } 
   }, [chatHistory, liveMessages]);
 
