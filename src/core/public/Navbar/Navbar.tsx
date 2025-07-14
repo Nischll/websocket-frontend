@@ -1,8 +1,16 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import reactLogo from "../../../assets/react.svg";
 import { Bell, CircleUserRound } from "lucide-react";
+import { useState } from "react";
+import { useChatSocket } from "../../../hooks/useChatSocket";
 
 const Navbar = () => {
+  const [notificationContainer, setNotificationContainer] =
+    useState<boolean>(false);
+
+  const navigate = useNavigate();
+  const { messages } = useChatSocket("123");
+
   return (
     <>
       <nav className="fixed w-full h-16 text-black px-3 z-10">
@@ -40,16 +48,54 @@ const Navbar = () => {
               </NavLink>
             ))}
           </div>
-          <div className="flex justify-center items-center gap-3">
-            <span className="rounded-full relative">
+          <div className="relative flex justify-center items-center gap-3">
+            <span
+              className="rounded-full relative cursor-pointer hover:bg-slate-100 p-1"
+              onClick={() => setNotificationContainer((prev) => !prev)}
+            >
               <Bell size={25} strokeWidth={1.5} />
-              <span className="absolute top-[-10px] right-0 text-xs text-white bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
-                3
-              </span>
+              {messages.length > 0 && (
+                <span className="absolute top-[-5px] right-0 text-xs text-white bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
+                  {messages.length}
+                </span>
+              )}
             </span>
-            <span className="rounded-full">
+            {notificationContainer === true && (
+              <div className="flex flex-col justify-start items-start min-h-32 gap-2 absolute top-7 right-8 bg-slate-200 w-md py-2 rounded-md shadow-md ">
+                {messages.length > 0 ? (
+                  messages.map((msg, i) => (
+                    <div
+                      key={i}
+                      className="w-full p-2 hover:bg-slate-300 cursor-pointer"
+                      onClick={() => {
+                        navigate("chat");
+                        setNotificationContainer(false);
+                      }}
+                    >
+                      <p className="text-sm font-semibold">
+                        From: {msg.senderId} → To: {msg.receiverId}
+                      </p>{" "}
+                      <p className="text-xs text-gray-600">
+                        Sent at: {new Date(msg.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="w-full text-center text-gray-400">
+                    No Notification!!
+                  </div>
+                )}
+              </div>
+            )}
+            {/* <span className="rounded-full">
               <CircleUserRound size={25} strokeWidth={1.5} />
-            </span>
+            </span> */}
+            <Link to="signup">
+              <span className="bg-red-600">Sign Up</span>
+            </Link>
+            <Link to="signin">
+              <span>Sign In</span>
+            </Link>
           </div>
         </div>
       </nav>

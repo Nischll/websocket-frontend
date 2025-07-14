@@ -20,7 +20,7 @@ interface SubscriptionMap {
 
 interface WebSocketContextType {
   subscribe: (topic: string, callback: (msg: IMessage) => void) => void;
-  unsubscribe: (tpiic: string) => void;
+  unsubscribe: (topic: string) => void;
   isConnected: boolean;
   clientRef: RefObject<Client | null>;
 }
@@ -56,6 +56,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({
           subscriptions.current[topic].subscription = sub;
         });
         setIsConnected(true);
+        console.log("connected");
       },
 
       onDisconnect: () => {
