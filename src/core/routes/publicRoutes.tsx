@@ -13,9 +13,11 @@ export const publicRoutes: RouteObject[] = [
   {
     path: "/",
     element: (
+      // <UnProtectedRoute>
       <WebSocketProvider>
         <Layout />
       </WebSocketProvider>
+      // </UnProtectedRoute>
     ),
     errorElement: (
       <>

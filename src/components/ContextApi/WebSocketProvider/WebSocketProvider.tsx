@@ -10,6 +10,7 @@ import React, {
   type RefObject,
 } from "react";
 import { socketUrl } from "../../../constants/Url/SocketUrl";
+import { getToken } from "../../../utility/authService";
 
 interface SubscriptionMap {
   [topic: string]: {
@@ -27,10 +28,6 @@ interface WebSocketContextType {
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
-// const getToken = () => {
-//   return localStorage.getItem("accessToken");
-// };
-
 export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
@@ -40,14 +37,19 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({
   const [isConnected, setIsConnected] = useState(false);
 
   const connect = useCallback(() => {
-    // const token = getToken();
-
     const client = new Client({
       brokerURL: `${socketUrl}`,
       // connectHeaders: {
       //   Authorization: `Bearer ${token}`,
       // },
       reconnectDelay: 5000,
+
+      beforeConnect: () => {
+        const token = getToken();
+        client.connectHeaders = {
+          Authorization: `Bearer ${token}`,
+        };
+      },
 
       onConnect: () => {
         isConnectedRef.current = true;
