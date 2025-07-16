@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUserState(token);
     }
     setIsLoading(false);
-    console.log("authprovider", token);
+    // console.log("authprovider", token);
   }, []);
 
   const setUser = (userData: any) => {

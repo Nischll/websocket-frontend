@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useWebSocket } from "../../../components/ContextApi/WebSocketProvider/WebSocketProvider";
 import { useChatSocket } from "../../../hooks/useChatSocket";
 import axios from "axios";
+import { useApiGet } from "../../../components/functional/ApiCall/ApiGet";
+import { QUERY_KEYS } from "../../../constants/QueryKeys/queryKeys";
 
 const ChatRoom = () => {
   const { messages: liveMessages } = useChatSocket("123");
@@ -11,15 +13,29 @@ const ChatRoom = () => {
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // useEffect(() => {
+  //   const fetchChatHistory = async () => {
+  //     const res = await axios.get(
+  //       `http://localhost:8080/api/chat/history?siteId=${123}&receiverId=${2}`
+  //     );
+  //     setChatHistory(res.data);
+  //   };
+  //   fetchChatHistory();
+  // }, []);
+
+  const {
+    data: chatData,
+    isLoading,
+    isError,
+  } = useApiGet(QUERY_KEYS.GET_ALL_CHAT_HISTORY, {
+    queryParams: { siteId: 123, receiverId: 2 },
+  });
+
   useEffect(() => {
-    const fetchChatHistory = async () => {
-      const res = await axios.get(
-        `http://localhost:8080/api/chat/history?siteId=${123}&receiverId=${2}`
-      );
-      setChatHistory(res.data);
-    };
-    fetchChatHistory();
-  }, []);
+    if (chatData) {
+      setChatHistory(chatData);
+    }
+  }, [chatData]);
 
   // useEffect(() => {
   //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -28,11 +44,11 @@ const ChatRoom = () => {
   useEffect(() => {
     if (chatHistory.length > 0) {
       bottomRef.current?.scrollIntoView({
-        behavior: "auto", 
+        behavior: "auto",
         block: "end",
       });
       // console.log("history msg");
-    } 
+    }
   }, [chatHistory, liveMessages]);
 
   const handleSendTest = () => {

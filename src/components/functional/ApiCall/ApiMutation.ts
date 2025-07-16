@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError, type AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
-import { apiService } from '../../api';
+import { apiService } from '../../../api';
 
 interface SuccessResponse<T = any> {
   message: string;

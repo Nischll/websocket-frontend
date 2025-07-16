@@ -1,6 +1,6 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import type { AxiosRequestConfig } from "axios";
-import { apiService } from "../../api";
+import { apiService } from "../../../api";
 
 interface UseGetApiConfig<TData = unknown> {
   queryParams?: Record<string, any>;
@@ -22,20 +22,19 @@ export const useApiGet = <T>(
     queryParams,
     enabled = true,
     axiosConfig,
-    staleTime = Infinity,
-    refetchOnMount = false,
+    staleTime = 0, // ✅ force fresh fetch unless overridden
+    refetchOnMount = true, // ✅ ensure it always refetches on component mount
     refetchOnWindowFocus = false,
     refetchOnReconnect = false,
     select,
     retry,
   } = config || {};
 
-  const queryKey = queryParams
-    ? [
-        Array.isArray(endpoint) ? endpoint[0] : endpoint,
-        JSON.stringify(queryParams),
-      ]
-    : [Array.isArray(endpoint) ? endpoint[0] : endpoint];
+  const queryKey = [
+    "GET",
+    Array.isArray(endpoint) ? endpoint[0] : endpoint,
+    queryParams ?? {},
+  ];
 
   const options: UseQueryOptions<T, Error, T, typeof queryKey> = {
     queryKey,
@@ -48,24 +47,16 @@ export const useApiGet = <T>(
     retry,
     queryFn: async () => {
       try {
-        const response = await apiService.get<T>(
+        const res = await apiService.get<T>(
           Array.isArray(endpoint) ? endpoint[0] : endpoint,
           {
             params: queryParams,
             ...axiosConfig,
           }
         );
-        return response.data;
-      } catch (error: any) {
-        // const message =
-        //   error?.response?.data?.message || 'Something went wrong';
-        // toast.error(message, {
-        //   autoClose: 2000,
-        //   position: 'bottom-center',
-        //   className: 'black-background',
-        //   progressClassName: 'fancy-progress-bar',
-        // });
-        // toast.clearWaitingQueue();
+        return res.data;
+      } catch (error) {
+        console.error("useApiGet error:", error);
         throw error;
       }
     },
